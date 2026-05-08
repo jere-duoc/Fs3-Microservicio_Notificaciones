@@ -1,0 +1,15 @@
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\controller\notificacionesController.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\dto\EventoHorarioDTO.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\dto\NotificacionDTO.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\dto\UsuarioDTO.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\factory\NotificacionFactory.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\model\NotificacionModel.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\notificaciones\Notificacion.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\notificaciones\NotificacionGmail.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\notificaciones\NotificacionPlataforma.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\notificaciones\NotificacionWhatsapp.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\NotificacionesApplication.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\rabbitmq\NotificacionConsumer.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\rabbitmq\RabbitConfig.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\repository\NotificacionesRepository.java
+C:\Users\gisla\backends_FS\Fs3-Microservicio_Notificaciones\src\main\java\DuocQuin\Notificaciones\service\NotificacionesService.java
