@@ -3,10 +3,14 @@ package DuocQuin.Notificaciones.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import DuocQuin.Notificaciones.model.NotificacionModel;
 import DuocQuin.Notificaciones.service.NotificacionesService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/notificaciones")
@@ -29,6 +33,17 @@ public class NotificacionesController {
     public List<NotificacionModel> listar() {
         return notificacionesService.listarNotificaciones();
     }
+
+    //obtener por id
+    @GetMapping("/{id}")
+    public ResponseEntity<NotificacionModel> obtenerIdNotificacion(@PathVariable Long id) {
+
+        return notificacionesService.obtenerPorId(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+    
+    }
+    
 
     //Eliminar notificacion(OPCIONAL)
     @DeleteMapping("/{id}")

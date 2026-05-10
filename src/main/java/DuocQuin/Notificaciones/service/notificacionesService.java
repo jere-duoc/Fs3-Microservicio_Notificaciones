@@ -2,13 +2,15 @@ package DuocQuin.Notificaciones.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-
+import DuocQuin.Notificaciones.dto.UsuarioDTO;
 import DuocQuin.Notificaciones.factory.NotificacionFactory;
 import DuocQuin.Notificaciones.model.NotificacionModel;
 import DuocQuin.Notificaciones.model.TipoEnvio;
@@ -24,6 +26,12 @@ public class NotificacionesService {
 
     @Autowired
     private NotificacionFactory notificacionFactory;
+
+    @Autowired
+    private UsuarioClient usuarioClient;
+
+    private static final Logger logger = LoggerFactory.getLogger(NotificacionesService.class);
+
 
     //procesar notificaciones 
     private void procesarNotificacion(NotificacionModel model) {
@@ -53,6 +61,18 @@ public class NotificacionesService {
             throw new IllegalArgumentException("Debe especificar tipo de envio");
         }
 
+        if(notificacionModel.getTipoEnvio() == TipoEnvio.GMAIL ||
+            notificacionModel.getTipoEnvio() == TipoEnvio.WHATSAPP){
+
+                if(notificacionModel.getIdUsuario() == null){
+                    throw new IllegalArgumentException("El idUsuario es obligatorio");
+                }
+
+                UsuarioDTO usuario = usuarioClient.obtenerUsuario(notificacionModel.getIdUsuario());
+                logger.info("Usuario obtenido {}", usuario.getPrimerNombre());
+            }
+            
+
         procesarNotificacion(notificacionModel);
         return notificacionesRepository.save(notificacionModel);
     }
@@ -65,12 +85,18 @@ public class NotificacionesService {
         fallback.setLeida(false);
         fallback.setTipoEnvio(TipoEnvio.PLATAFORMA);
 
+        logger.error("Fallback activado: {}", e.getMessage());
         return fallback;
     }
 
     //Listar notificciones
     public List<NotificacionModel> listarNotificaciones() {
         return notificacionesRepository.findAll();
+    }
+
+    //Listar notificacion por id
+    public Optional<NotificacionModel> obtenerPorId(Long id_notificacion){
+        return notificacionesRepository.findById(id_notificacion);
     }
 
     //Eliminar notificacion(OPCIONAL)
@@ -108,7 +134,17 @@ public class NotificacionesService {
             tipoEnvio = TipoEnvio.PLATAFORMA;
         }
 
+
+        try{
+            UsuarioDTO usuario = usuarioClient.obtenerUsuario(idUsuario);
+            logger.info("Usuario obtenido: {}", usuario.getPrimerNombre());
+        }catch(Exception e){
+            logger.error("No se pudo consultar usuario {}", e.getMessage());
+        }
+
+
         NotificacionModel model = new NotificacionModel();
+
 
         model.setIdHorario(idHorario);
         model.setIdUsuario(idUsuario);
@@ -136,6 +172,7 @@ public class NotificacionesService {
         fallback.setFechaEnvio(LocalDateTime.now());
         fallback.setLeida(false);
 
+        logger.error("Fallback activado: {}", e.getMessage());
         return fallback;
     }
 }
