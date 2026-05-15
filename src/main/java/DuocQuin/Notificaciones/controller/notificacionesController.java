@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import DuocQuin.Notificaciones.model.NotificacionModel;
 import DuocQuin.Notificaciones.service.NotificacionesService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
