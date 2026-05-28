@@ -118,5 +118,51 @@ public class NotificacionesService {
         return notificacionesRepository.save(notificacionModel);
     }
 
-    // Método crearDesdeHorario eliminado - RabbitMQ removido del sistema
+    // Método crearDesdeHorario
+    @CircuitBreaker(name = "notificaciones", fallbackMethod = "fallbackCrearDesdeHorario")
+    public NotificacionModel crearDesdeHorario(
+            Long idHorario,
+            Long idUsuario,
+            String mensaje,
+            TipoEnvio tipoEnvio) {
+
+        if (mensaje == null || mensaje.isBlank()) {
+            throw new IllegalArgumentException("El mensaje no puede estar vacio");
+        }
+
+        if (tipoEnvio == null) {
+            tipoEnvio = TipoEnvio.PLATAFORMA;
+        }
+
+        NotificacionModel model = new NotificacionModel();
+
+        model.setIdHorario(idHorario);
+        model.setIdUsuario(idUsuario);
+        model.setMensaje(mensaje);
+        model.setTipoEnvio(tipoEnvio);
+
+        procesarNotificacion(model);
+
+        return notificacionesRepository.save(model);
+    }
+
+    //fallback notificacion automatica
+    public NotificacionModel fallbackCrearDesdeHorario(
+            Long idHorario,
+            Long idUsuario,
+            String mensaje,
+            TipoEnvio tipoEnvio,
+            Exception e) {
+
+        NotificacionModel fallback = new NotificacionModel();
+        fallback.setIdHorario(idHorario);
+        fallback.setIdUsuario(idUsuario);
+        fallback.setMensaje("Notificacion pendiente por caida del servicio");
+        fallback.setTipoEnvio(TipoEnvio.PLATAFORMA);
+        fallback.setFechaEnvio(LocalDateTime.now());
+        fallback.setLeida(false);
+
+        return fallback;
+    }
 }
+
