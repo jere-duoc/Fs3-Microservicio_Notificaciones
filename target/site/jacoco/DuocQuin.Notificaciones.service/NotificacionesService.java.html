@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotificacionesService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Notificaciones</a> &gt; <a href="index.source.html" class="el_package">DuocQuin.Notificaciones.service</a> &gt; <span class="el_source">NotificacionesService.java</span></div><h1>NotificacionesService.java</h1><pre class="source lang-java linenums">package DuocQuin.Notificaciones.service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import DuocQuin.Notificaciones.dto.UsuarioDTO;
+import DuocQuin.Notificaciones.factory.NotificacionFactory;
+import DuocQuin.Notificaciones.model.NotificacionModel;
+import DuocQuin.Notificaciones.model.TipoEnvio;
+import DuocQuin.Notificaciones.notificaciones.Notificacion;
+import DuocQuin.Notificaciones.repository.NotificacionesRepository;
+
+@Service
+@Transactional
+<span class="fc" id="L22">public class NotificacionesService {</span>
+
+    @Autowired
+    private NotificacionesRepository notificacionesRepository;
+
+    @Autowired
+    private NotificacionFactory notificacionFactory;
+
+    @Autowired
+    private UsuarioClient usuarioClient;
+
+<span class="fc" id="L33">    private static final Logger logger = LoggerFactory.getLogger(NotificacionesService.class);</span>
+
+
+    //procesar notificaciones 
+    private void procesarNotificacion(NotificacionModel model) {
+
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        if (model.getTipoEnvio() == null) {</span>
+<span class="nc" id="L40">            model.setTipoEnvio(TipoEnvio.PLATAFORMA);</span>
+        }
+
+<span class="fc" id="L43">        model.setFechaEnvio(LocalDateTime.now());</span>
+<span class="fc" id="L44">        model.setLeida(false);</span>
+
+<span class="fc" id="L46">        Notificacion servicio =</span>
+<span class="fc" id="L47">            notificacionFactory.obtener(model.getTipoEnvio());</span>
+
+<span class="fc" id="L49">        servicio.tipoEnvioMensaje(model);</span>
+<span class="fc" id="L50">    }</span>
+
+    //Crear de notificacion forma manual(admin)
+    @CircuitBreaker(name = &quot;notificaciones&quot;, fallbackMethod = &quot;fallbackCrearManual&quot;)
+    public NotificacionModel crearManual(NotificacionModel notificacionModel) {
+
+<span class="pc bpc" id="L56" title="1 of 4 branches missed.">        if (notificacionModel.getMensaje() == null || notificacionModel.getMensaje().isBlank()) {</span>
+<span class="fc" id="L57">            throw new IllegalArgumentException(&quot;El mensaje es obligatorio&quot;);</span>
+        }
+
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (notificacionModel.getTipoEnvio() == null) {</span>
+<span class="fc" id="L61">            throw new IllegalArgumentException(&quot;Debe especificar tipo de envio&quot;);</span>
+        }
+
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if(notificacionModel.getTipoEnvio() == TipoEnvio.GMAIL ||</span>
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">            notificacionModel.getTipoEnvio() == TipoEnvio.WHATSAPP){</span>
+
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">                if(notificacionModel.getIdUsuario() == null){</span>
+<span class="nc" id="L68">                    throw new IllegalArgumentException(&quot;El idUsuario es obligatorio&quot;);</span>
+                }
+
+<span class="fc" id="L71">                UsuarioDTO usuario = usuarioClient.obtenerUsuario(notificacionModel.getIdUsuario());</span>
+<span class="fc" id="L72">                logger.info(&quot;Usuario obtenido {}&quot;, usuario.getPrimerNombre());</span>
+            }
+            
+
+<span class="fc" id="L76">        procesarNotificacion(notificacionModel);</span>
+<span class="fc" id="L77">        return notificacionesRepository.save(notificacionModel);</span>
+    }
+
+    //fallback de notificacion manual
+    public NotificacionModel fallbackCrearManual(NotificacionModel notificacionModel, Exception e) {
+<span class="fc" id="L82">        NotificacionModel fallback = new NotificacionModel();</span>
+<span class="fc" id="L83">        fallback.setMensaje(&quot;Servicio de notificaciones no disponible&quot;);</span>
+<span class="fc" id="L84">        fallback.setFechaEnvio(LocalDateTime.now());</span>
+<span class="fc" id="L85">        fallback.setLeida(false);</span>
+<span class="fc" id="L86">        fallback.setTipoEnvio(TipoEnvio.PLATAFORMA);</span>
+
+<span class="fc" id="L88">        logger.error(&quot;Fallback activado: {}&quot;, e.getMessage());</span>
+<span class="fc" id="L89">        return fallback;</span>
+    }
+
+    //Listar notificciones
+    public List&lt;NotificacionModel&gt; listarNotificaciones() {
+<span class="fc" id="L94">        return notificacionesRepository.findAll();</span>
+    }
+
+    //Listar notificacion por id
+    public Optional&lt;NotificacionModel&gt; obtenerPorId(Long id_notificacion){
+<span class="fc" id="L99">        return notificacionesRepository.findById(id_notificacion);</span>
+    }
+
+    //Eliminar notificacion(OPCIONAL)
+    public void eliminarNotificacion(Long id) {
+
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (!notificacionesRepository.existsById(id)) {</span>
+<span class="fc" id="L106">            throw new IllegalArgumentException(&quot;Notificacion no encontrada&quot;);</span>
+        }
+<span class="fc" id="L108">        notificacionesRepository.deleteById(id);</span>
+<span class="fc" id="L109">    }</span>
+
+    //Editar notificacion (OPCIONAL)
+    public NotificacionModel editarNotificacion(NotificacionModel notificacionModel) {
+
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (notificacionModel.getIdNotificacion() == null) {</span>
+<span class="fc" id="L115">            throw new IllegalArgumentException(&quot;ID de notificacion requerido&quot;);</span>
+        }
+
+<span class="fc" id="L118">        return notificacionesRepository.save(notificacionModel);</span>
+    }
+
+    // Método crearDesdeHorario
+    @CircuitBreaker(name = &quot;notificaciones&quot;, fallbackMethod = &quot;fallbackCrearDesdeHorario&quot;)
+    public NotificacionModel crearDesdeHorario(
+            Long idHorario,
+            Long idUsuario,
+            String mensaje,
+            TipoEnvio tipoEnvio) {
+
+<span class="pc bpc" id="L129" title="2 of 4 branches missed.">        if (mensaje == null || mensaje.isBlank()) {</span>
+<span class="nc" id="L130">            throw new IllegalArgumentException(&quot;El mensaje no puede estar vacio&quot;);</span>
+        }
+
+<span class="fc bfc" id="L133" title="All 2 branches covered.">        if (tipoEnvio == null) {</span>
+<span class="fc" id="L134">            tipoEnvio = TipoEnvio.PLATAFORMA;</span>
+        }
+
+<span class="fc" id="L137">        NotificacionModel model = new NotificacionModel();</span>
+
+<span class="fc" id="L139">        model.setIdHorario(idHorario);</span>
+<span class="fc" id="L140">        model.setIdUsuario(idUsuario);</span>
+<span class="fc" id="L141">        model.setMensaje(mensaje);</span>
+<span class="fc" id="L142">        model.setTipoEnvio(tipoEnvio);</span>
+
+<span class="fc" id="L144">        procesarNotificacion(model);</span>
+
+<span class="fc" id="L146">        return notificacionesRepository.save(model);</span>
+    }
+
+    //fallback notificacion automatica
+    public NotificacionModel fallbackCrearDesdeHorario(
+            Long idHorario,
+            Long idUsuario,
+            String mensaje,
+            TipoEnvio tipoEnvio,
+            Exception e) {
+
+<span class="fc" id="L157">        NotificacionModel fallback = new NotificacionModel();</span>
+<span class="fc" id="L158">        fallback.setIdHorario(idHorario);</span>
+<span class="fc" id="L159">        fallback.setIdUsuario(idUsuario);</span>
+<span class="fc" id="L160">        fallback.setMensaje(&quot;Notificacion pendiente por caida del servicio&quot;);</span>
+<span class="fc" id="L161">        fallback.setTipoEnvio(TipoEnvio.PLATAFORMA);</span>
+<span class="fc" id="L162">        fallback.setFechaEnvio(LocalDateTime.now());</span>
+<span class="fc" id="L163">        fallback.setLeida(false);</span>
+
+<span class="fc" id="L165">        return fallback;</span>
+    }
+
+        @CircuitBreaker(name = &quot;notificaciones&quot;, fallbackMethod = &quot;fallbackCrearDesdePago&quot;)
+    public NotificacionModel crearDesdePago(
+            Long idSueldo,
+            Long idUsuario,
+            String mensaje,
+            TipoEnvio tipoEnvio) {
+
+<span class="fc" id="L175">        NotificacionModel model = new NotificacionModel();</span>
+
+<span class="fc" id="L177">        model.setIdSueldo(idSueldo);</span>
+<span class="fc" id="L178">        model.setIdUsuario(idUsuario);</span>
+<span class="fc" id="L179">        model.setMensaje(mensaje);</span>
+<span class="fc" id="L180">        model.setTipoEnvio(tipoEnvio);</span>
+
+<span class="fc" id="L182">        procesarNotificacion(model);</span>
+
+<span class="fc" id="L184">        return notificacionesRepository.save(model);</span>
+    }
+
+    public NotificacionModel fallbackCrearDesdePago(
+        Long idPago,
+        Long idUsuario,
+        String mensaje,
+        TipoEnvio tipoEnvio,
+        Exception e) {
+
+<span class="fc" id="L194">    NotificacionModel fallback = new NotificacionModel();</span>
+<span class="fc" id="L195">    fallback.setIdUsuario(idUsuario);</span>
+<span class="fc" id="L196">    fallback.setMensaje(&quot;Notificación de pago pendiente&quot;);</span>
+<span class="fc" id="L197">    fallback.setTipoEnvio(TipoEnvio.PLATAFORMA);</span>
+<span class="fc" id="L198">    fallback.setFechaEnvio(LocalDateTime.now());</span>
+<span class="fc" id="L199">    fallback.setLeida(false);</span>
+
+<span class="fc" id="L201">    return fallback;</span>
+}
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

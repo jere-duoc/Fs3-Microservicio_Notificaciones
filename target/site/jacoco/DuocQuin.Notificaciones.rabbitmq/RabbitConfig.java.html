@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RabbitConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Notificaciones</a> &gt; <a href="index.source.html" class="el_package">DuocQuin.Notificaciones.rabbitmq</a> &gt; <span class="el_source">RabbitConfig.java</span></div><h1>RabbitConfig.java</h1><pre class="source lang-java linenums">package DuocQuin.Notificaciones.rabbitmq;
+
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+@Configuration
+<span class="fc" id="L14">public class RabbitConfig {</span>
+
+    //Buzon
+    @Bean
+    public Queue colaHorarios() {
+<span class="fc" id="L19">        return new Queue(&quot;cola_horarios&quot;, true);</span>
+    }
+
+    @Bean
+    public Queue colaPagos(){
+<span class="fc" id="L24">        return new Queue(&quot;cola_pagos&quot;, true);</span>
+    }
+
+
+
+    @Bean
+    public DirectExchange exchange(){
+<span class="fc" id="L31">        return new DirectExchange(&quot;duocquin.exchange&quot;);</span>
+    }
+
+    //binding es la relacion entre el exchange y una cola
+    @Bean
+    public Binding horarioBinding (
+        @Qualifier(&quot;colaHorarios&quot;) Queue colaHorarios,
+         DirectExchange exchange){
+
+    
+<span class="nc" id="L41">        return BindingBuilder</span>
+<span class="nc" id="L42">            .bind(colaHorarios)</span>
+<span class="nc" id="L43">            .to(exchange)</span>
+<span class="nc" id="L44">            .with(&quot;horario.creado&quot;);</span>
+    }
+
+    @Bean
+    public Binding pagoBinding(
+        @Qualifier(&quot;colaPagos&quot;) Queue colaPagos,
+         DirectExchange exchange){
+
+<span class="nc" id="L52">        return BindingBuilder</span>
+<span class="nc" id="L53">            .bind(colaPagos)</span>
+<span class="nc" id="L54">            .to(exchange)</span>
+<span class="nc" id="L55">            .with(&quot;pago.generado&quot;);</span>
+    }
+    
+
+    @Bean
+    public MessageConverter jsonMessageConverter() {
+<span class="nc" id="L61">        return new Jackson2JsonMessageConverter();</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

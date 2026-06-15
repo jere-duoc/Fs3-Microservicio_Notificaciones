@@ -1,1 +1,9 @@
-DuocQuin\Notificaciones\NotificacionesApplicationTests.class
+DuocQuin\Notificaciones\rabbitTest\NotificacionConsumerTest.class
+DuocQuin\Notificaciones\factoryTest\NotificacionFactoryTest.class
+DuocQuin\Notificaciones\dtosTest\EventoHorarioDTOTest.class
+DuocQuin\Notificaciones\serviceTest\NotificacionesServiceTest.class
+DuocQuin\Notificaciones\dtosTest\UsuarioDTOTest.class
+DuocQuin\Notificaciones\controllerTest\NotificacionControllerTest.class
+DuocQuin\Notificaciones\rabbitTest\RabbitConfigTest.class
+DuocQuin\Notificaciones\plataformaTest\NotificacionPlataformaTest.class
+DuocQuin\Notificaciones\dtosTest\EventoPagosDTOTest.class

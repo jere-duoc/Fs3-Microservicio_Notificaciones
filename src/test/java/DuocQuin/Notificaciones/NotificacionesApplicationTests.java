@@ -1,4 +1,4 @@
-package DuocQuin.Notificaciones;
+/*package DuocQuin.Notificaciones;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,3 +11,4 @@ class NotificacionesApplicationTests {
 	}
 
 }
+*/

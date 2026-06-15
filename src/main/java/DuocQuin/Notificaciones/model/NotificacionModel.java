@@ -35,6 +35,9 @@ public class NotificacionModel {
     @Column(name = "id_horario")
     private Long idHorario;
 
+    @Column(name = "id_sueldos")
+    private Long idSueldo;
+
     @NotNull(message = "La notificación debe contener un mensaje")
     @Column(name = "mensaje")
     private String mensaje;

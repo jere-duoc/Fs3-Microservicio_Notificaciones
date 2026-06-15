@@ -164,5 +164,41 @@ public class NotificacionesService {
 
         return fallback;
     }
+
+        @CircuitBreaker(name = "notificaciones", fallbackMethod = "fallbackCrearDesdePago")
+    public NotificacionModel crearDesdePago(
+            Long idSueldo,
+            Long idUsuario,
+            String mensaje,
+            TipoEnvio tipoEnvio) {
+
+        NotificacionModel model = new NotificacionModel();
+
+        model.setIdSueldo(idSueldo);
+        model.setIdUsuario(idUsuario);
+        model.setMensaje(mensaje);
+        model.setTipoEnvio(tipoEnvio);
+
+        procesarNotificacion(model);
+
+        return notificacionesRepository.save(model);
+    }
+
+    public NotificacionModel fallbackCrearDesdePago(
+        Long idPago,
+        Long idUsuario,
+        String mensaje,
+        TipoEnvio tipoEnvio,
+        Exception e) {
+
+    NotificacionModel fallback = new NotificacionModel();
+    fallback.setIdUsuario(idUsuario);
+    fallback.setMensaje("Notificación de pago pendiente");
+    fallback.setTipoEnvio(TipoEnvio.PLATAFORMA);
+    fallback.setFechaEnvio(LocalDateTime.now());
+    fallback.setLeida(false);
+
+    return fallback;
+}
 }
 
