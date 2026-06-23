@@ -52,4 +52,17 @@ public class NotificacionModel {
 
     @Column(name = "leida")
     private Boolean leida;
+
+
+    public void setTipoEnvio(TipoEnvio tipoEnvio) {
+        this.tipoEnvio = tipoEnvio;
+    }
+
+    public void setFechaEnvio(LocalDateTime fechaEnvio) {
+        this.fechaEnvio = fechaEnvio;
+    }
+
+    public void setLeida(Boolean leida) {
+        this.leida = leida;
+    }
 }
