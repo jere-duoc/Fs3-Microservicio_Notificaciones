@@ -1,7 +1,6 @@
 package DuocQuin.Notificaciones.model;
 
 import java.time.LocalDateTime;
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,17 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "notificaciones")
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
 public class NotificacionModel {
 
     @Id
@@ -53,16 +44,40 @@ public class NotificacionModel {
     @Column(name = "leida")
     private Boolean leida;
 
+    public NotificacionModel() {}
 
-    public void setTipoEnvio(TipoEnvio tipoEnvio) {
-        this.tipoEnvio = tipoEnvio;
-    }
-
-    public void setFechaEnvio(LocalDateTime fechaEnvio) {
+    public NotificacionModel(Long idNotificacion, Long idUsuario, Long idHorario, Long idSueldo, String mensaje, LocalDateTime fechaEnvio, TipoEnvio tipoEnvio, Boolean leida) {
+        this.idNotificacion = idNotificacion;
+        this.idUsuario = idUsuario;
+        this.idHorario = idHorario;
+        this.idSueldo = idSueldo;
+        this.mensaje = mensaje;
         this.fechaEnvio = fechaEnvio;
-    }
-
-    public void setLeida(Boolean leida) {
+        this.tipoEnvio = tipoEnvio;
         this.leida = leida;
     }
+
+    public Long getIdNotificacion() { return idNotificacion; }
+    public void setIdNotificacion(Long idNotificacion) { this.idNotificacion = idNotificacion; }
+
+    public Long getIdUsuario() { return idUsuario; }
+    public void setIdUsuario(Long idUsuario) { this.idUsuario = idUsuario; }
+
+    public Long getIdHorario() { return idHorario; }
+    public void setIdHorario(Long idHorario) { this.idHorario = idHorario; }
+
+    public Long getIdSueldo() { return idSueldo; }
+    public void setIdSueldo(Long idSueldo) { this.idSueldo = idSueldo; }
+
+    public String getMensaje() { return mensaje; }
+    public void setMensaje(String mensaje) { this.mensaje = mensaje; }
+
+    public LocalDateTime getFechaEnvio() { return fechaEnvio; }
+    public void setFechaEnvio(LocalDateTime fechaEnvio) { this.fechaEnvio = fechaEnvio; }
+
+    public TipoEnvio getTipoEnvio() { return tipoEnvio; }
+    public void setTipoEnvio(TipoEnvio tipoEnvio) { this.tipoEnvio = tipoEnvio; }
+
+    public Boolean getLeida() { return leida; }
+    public void setLeida(Boolean leida) { this.leida = leida; }
 }
