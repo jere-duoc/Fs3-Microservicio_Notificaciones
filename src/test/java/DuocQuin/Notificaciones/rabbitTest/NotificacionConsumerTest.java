@@ -1,4 +1,4 @@
-package DuocQuin.Notificaciones.rabbitTest;
+/*package DuocQuin.Notificaciones.rabbitTest;
 
 import static org.mockito.Mockito.verify;
 
@@ -63,3 +63,4 @@ class NotificacionConsumerTest {
     }
 }
 
+*/

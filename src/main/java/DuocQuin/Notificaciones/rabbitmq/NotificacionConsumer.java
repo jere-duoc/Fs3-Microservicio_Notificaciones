@@ -1,4 +1,4 @@
-package DuocQuin.Notificaciones.rabbitmq;
+/**package DuocQuin.Notificaciones.rabbitmq;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,4 +48,4 @@ public class NotificacionConsumer {
         );
 
     }
-}
+}**/

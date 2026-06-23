@@ -1,4 +1,4 @@
-package DuocQuin.Notificaciones.dtosTest;
+/*package DuocQuin.Notificaciones.dtosTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,4 +32,4 @@ class EventoPagosDTOTest {
         assertEquals(2L, dto.getIdUsuario());
         assertEquals("Pago generado", dto.getMensaje());
     }
-}
+}*/

@@ -1,4 +1,4 @@
-package DuocQuin.Notificaciones.dto;
+/*package DuocQuin.Notificaciones.dto;
 
 import DuocQuin.Notificaciones.model.TipoEnvio;
 import lombok.AllArgsConstructor;
@@ -17,4 +17,4 @@ public class EventoHorarioDTO {
     private Long idUsuario;
     private String mensaje;
     private TipoEnvio tipoEnvio;
-}
+}*/

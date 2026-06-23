@@ -1,4 +1,4 @@
-package DuocQuin.Notificaciones.dto;
+/*package DuocQuin.Notificaciones.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,4 +11,4 @@ public class EventoPagosDTO {
     private Long idSueldo;
     private Long idUsuario;
     private String mensaje;
-}
+}*/

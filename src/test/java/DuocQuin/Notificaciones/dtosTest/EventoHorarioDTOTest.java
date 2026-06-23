@@ -1,4 +1,4 @@
-package DuocQuin.Notificaciones.dtosTest;
+/**package DuocQuin.Notificaciones.dtosTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,4 +37,4 @@ class EventoHorarioDTOTest {
         assertEquals("Horario creado", dto.getMensaje());
         assertEquals(TipoEnvio.GMAIL, dto.getTipoEnvio());
     }
-}
+}*/
