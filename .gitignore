@@ -1,0 +1,14 @@
+.env
+
+# Ignorar compilados de Java (mavenn)
+target/
+*.jar
+*.war
+
+# Archivos de entornos de desarrollo
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
